@@ -19,6 +19,9 @@ app.use('/api/auth', require('./src/routes/authRoutes'));
 
 // Rotas PRIVADAS
 app.use('/api/categorias', require('./src/routes/categoriaRoutes'));
+app.use('/api/produtos', require('./src/routes/produtosRoutes'));
+app.use('/api/clientes', require('./src/routes/clientesRoutes'));
+app.use('/api/pedidos', require('./src/routes/pedidosRoutes'));
 
 app.get('/', (req, res) =>
   res.json({ message: 'API Loja v2.0.0 — MySQL 🚀', docs: '/api-docs' })
