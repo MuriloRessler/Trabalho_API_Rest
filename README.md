@@ -137,7 +137,7 @@ Todas as rotas de CRUD (exceto a de status/versão) exigem autenticação JWT **
 
 ### 1. Clone o repositório
 ```bash
-git clone https://github.com/MuriloRessler/Trabalho_API
+git clone https://github.com/MuriloRessler/Trabalho_API_Rest
 ```
 
 ### 2. Acesse a pasta
