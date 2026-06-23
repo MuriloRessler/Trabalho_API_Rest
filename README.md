@@ -142,7 +142,7 @@ git clone https://github.com/MuriloRessler/Trabalho_API_Rest
 
 ### 2. Acesse a pasta
 ```bash
-cd Trabalho_API
+cd TRABALHO_API_REST
 ```
 
 ### 3. Instale as dependências
