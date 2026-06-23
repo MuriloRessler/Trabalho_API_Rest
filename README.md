@@ -1,340 +1,407 @@
-# 🚀 Trabalho_API - Catálogo de Produtos REST API
+Readme · MDCopiar🚀 API Loja — REST API (MySQL)
 
-![Node.js](https://img.shields.io/badge/Node.js-v18+-green)
-![Express](https://img.shields.io/badge/Express-4.x-blue)
-![MongoDB](https://img.shields.io/badge/MongoDB-Database-success)
-![JWT](https://img.shields.io/badge/Auth-JWT-orange)
-![Swagger](https://img.shields.io/badge/Docs-Swagger-brightgreen)
+Mostrar Imagem
+Mostrar Imagem
+Mostrar Imagem
+Mostrar Imagem
+Mostrar Imagem
 
-API RESTful desenvolvida com **Node.js**, **Express** e **MongoDB** para gerenciamento de produtos, utilizando autenticação via **JWT**, proteção contra **NoSQL Injection** e documentação interativa com **Swagger**.
+API RESTful desenvolvida com Node.js, Express e MySQL para gerenciamento de uma loja (categorias, produtos, clientes e pedidos), utilizando autenticação via JWT, proteção contra SQL Injection com Prepared Statements, e documentação interativa com Swagger.
 
----
 
-## 📖 Sobre o Projeto
+📌 Migração de versão: este projeto era originalmente baseado em MongoDB/Mongoose (v1.0.0). A v2.0.0 migrou toda a camada de persistência para MySQL, seguindo o padrão MVC, e expandiu o escopo para os módulos de Categorias, Produtos, Clientes e Pedidos.
 
-O sistema permite que usuários se registrem e realizem login para acessar uma área protegida de gerenciamento de produtos.
 
-Cada produto possui informações como:
 
-* Nome
-* Descrição
-* Preço
-* Categoria
-* Estoque
-* Atributos personalizados
 
-A API segue os princípios REST e utiliza autenticação baseada em tokens JWT para proteger os endpoints de produtos.
+📖 Sobre o Projeto
 
----
+O sistema permite que usuários se registrem e façam login para acessar as áreas protegidas de gerenciamento da loja. As entidades disponíveis são:
 
-## 🛠️ Tecnologias Utilizadas
 
-### Back-end
+Categorias — id_categoria, nome
+Produtos — id_produto, nome, valor, estoque, vinculado a uma categoria
+Clientes — id_cliente, nome, telefone, status (bom/medio/ruim)
+Pedidos — id_pedido, data, vinculado a um cliente, com itens (produtos_pedidos)
 
-* Node.js
-* Express.js
 
-### Banco de Dados
+Todas as rotas de CRUD (exceto a de status/versão) exigem autenticação JWT e validação do ID do usuário presente no token.
 
-* MongoDB
-* Mongoose
 
-### Segurança
+🛠️ Tecnologias Utilizadas
 
-* JWT (JSON Web Token)
-* bcryptjs
-* express-mongo-sanitize
+Back-end
 
-### Documentação
 
-* Swagger UI
+Node.js
+Express.js
 
-### Utilitários
 
-* dotenv
-* nodemon
+Banco de Dados
 
----
 
-## 📂 Estrutura do Projeto
+MySQL
+mysql2 (driver com suporte a Promises/async-await)
 
-```text
-src/
-├── config/
-│   └── database.js
+
+Segurança
+
+
+JWT (JSON Web Token)
+bcryptjs (hash de senhas)
+Prepared Statements (?) em todas as queries SQL
+
+
+Documentação
+
+
+Swagger UI
+
+
+Utilitários
+
+
+dotenv
+nodemon
+
+
+
+📂 Estrutura do Projeto
+
+text├── server.js
+├── loja.sql                      <-- Script do banco (inclui tabela `usuarios`)
+├── .env                          <-- Credenciais (não commitar)
 │
-├── controllers/
-│   ├── authController.js
-│   └── productController.js
-│
-├── middleware/
-│   ├── auth.js
-│   └── santize.js
-│
-├── models/
-│   ├── User.js
-│   └── Product.js
-│
-├── routes/
-│   ├── authRoutes.js
-│   └── productRoutes.js
-│
-├── swagger/
-│   └── swagger.js
-│
-server.js
-```
+└── src/
+    ├── config/
+    │   └── database.js           <-- Pool de conexões MySQL
+    │
+    ├── controllers/
+    │   ├── authController.js
+    │   ├── categoriaController.js
+    │   ├── produtoController.js
+    │   ├── clienteController.js
+    │   └── pedidoController.js
+    │
+    ├── middleware/
+    │   └── auth.js               <-- Valida JWT + exige ID do usuário no payload
+    │
+    ├── models/
+    │   ├── usuarioModel.js
+    │   ├── categoriaModel.js
+    │   ├── produtoModel.js
+    │   ├── clienteModel.js
+    │   └── pedidoModel.js
+    │
+    ├── routes/
+    │   ├── apiRoutes.js          <-- GET /api/status (público)
+    │   ├── authRoutes.js
+    │   ├── categoriaRoutes.js
+    │   ├── produtosRoutes.js
+    │   ├── clientesRoutes.js
+    │   └── pedidosRoutes.js
+    │
+    └── swagger/
+        └── swagger.js
 
----
 
-## ✨ Funcionalidades
+✨ Funcionalidades
 
-### Usuários
+Usuários
 
-* [x] Cadastro de usuários
-* [x] Login com JWT
-* [x] Criptografia de senhas com bcrypt
 
-### Produtos
+ Cadastro de usuários
+ Login com JWT
+ Senhas armazenadas como hash bcrypt (nunca em texto puro)
 
-* [x] Criar produto
-* [x] Listar produtos
-* [x] Buscar produto por ID
-* [x] Atualizar produto
-* [x] Excluir produto
 
-### Segurança
+Categorias 🔒
 
-* [x] Rotas protegidas por JWT
-* [x] Proteção contra NoSQL Injection
-* [x] Senhas armazenadas de forma criptografada
 
-### Documentação
+ Criar, listar, buscar por ID, atualizar e excluir
 
-* [x] Swagger UI integrado
-* [x] Teste de endpoints diretamente pelo navegador
 
----
+Produtos 🔒
 
-## 📦 Instalação
 
-### Pré-requisitos
+ CRUD completo
+ Validação: categoria vinculada precisa existir
 
-* Git
-* Node.js 18+
-* MongoDB Atlas ou MongoDB Local
 
----
+Clientes 🔒
 
-### 1. Clone o repositório
 
-```bash
-git clone https://github.com/MuriloRessler/Trabalho_API
-```
+ CRUD completo
+ Campo status restrito a bom, medio ou ruim
 
-### 2. Acesse a pasta
 
-```bash
-cd Trabalho_API
-```
+Pedidos 🔒
 
-### 3. Instale as dependências
 
-```bash
-npm install
-```
+ CRUD completo
+ Criação com itens (produtos_pedidos) em transação (tudo ou nada)
+ Validação: cliente e produtos vinculados precisam existir
 
----
 
-## 🔑 Configuração das Variáveis de Ambiente
+Monitoramento
 
-Crie um arquivo `.env` na raiz do projeto:
 
-```env
-PORT=3000
+ Rota pública GET /api/status (sem autenticação)
 
-MONGODB_URI=mongodb+srv://usuario:senha@cluster.mongodb.net/database
+
+Segurança
+
+
+ Rotas de CRUD protegidas por JWT + verificação de ID do usuário no token
+ Proteção contra SQL Injection via Prepared Statements
+ Bloqueio com 401/403 em qualquer tentativa de acesso sem token válido
+
+
+Documentação
+
+
+ Swagger UI integrado, com todos os módulos documentados
+ Suporte a autenticação Bearer direto na interface (botão Authorize)
+
+
+
+📦 Instalação
+
+Pré-requisitos
+
+
+Git
+Node.js 18+
+MySQL Server (local ou remoto)
+
+
+1. Clone o repositório
+
+bashgit clone https://github.com/MuriloRessler/Trabalho_API_Rest
+
+2. Acesse a pasta
+
+bashcd Trabalho_API
+
+3. Instale as dependências
+
+bashnpm install
+
+4. Crie o banco de dados
+
+Importe o script loja.sql no seu servidor MySQL (cria as tabelas categorias, clientes, endereco, pedidos, produtos, produtos_pedidos e usuarios):
+
+bashmysql -u root -p < loja.sql
+
+
+🔑 Configuração das Variáveis de Ambiente
+
+Crie um arquivo .env na raiz do projeto (use .env.example como base):
+
+envPORT=3000
+
+DB_HOST=localhost
+DB_PORT=3306
+DB_USER=root
+DB_PASSWORD=sua_senha
+DB_NAME=loja
 
 JWT_SECRET=sua_chave_secreta
 
-JWT_EXPIRES_IN=7d
-```
 
----
+⚠️ O .env nunca deve ser commitado — ele já está listado no .gitignore.
 
-## 🚀 Executando a Aplicação
 
-### Desenvolvimento
 
-```bash
-npm run dev
-```
 
-### Produção
+🚀 Executando a Aplicação
 
-```bash
-npm start
-```
+Desenvolvimento
+
+bashnpm run dev
+
+Produção
+
+bashnpm start
 
 Servidor disponível em:
 
-```text
-http://localhost:3000
-```
+texthttp://localhost:3000
 
----
+Ao iniciar, o terminal confirma a conexão com o MySQL:
 
-## 📖 Documentação Swagger
+text✅ MySQL conectado com sucesso!
+🚀 Servidor rodando na porta 3000
+
+
+📖 Documentação Swagger
 
 Após iniciar o servidor, acesse:
 
-```text
-http://localhost:3000/api-docs
-```
+texthttp://localhost:3000/api-docs
 
 A documentação permite:
 
-* Visualizar todos os endpoints
-* Testar requisições
-* Informar token JWT diretamente pela interface
-* Ver exemplos de request e response
 
----
+Visualizar todos os endpoints, organizados por módulo (Categorias 🔒, Produtos 🔒, Clientes 🔒, Pedidos 🔒)
+Testar requisições diretamente pelo navegador
+Informar o token JWT pelo botão Authorize (formato Bearer <token>)
+Ver exemplos de request e response de cada rota
 
-## 🔐 Autenticação
 
-### Registrar Usuário
 
-```http
-POST /api/auth/register
-```
+🔐 Autenticação
 
-```json
-{
-  "name": "João Silva",
+Registrar Usuário
+
+httpPOST /api/auth/register
+
+json{
+  "nome": "João Silva",
   "email": "joao@email.com",
-  "password": "123456"
+  "password": "senha123"
 }
-```
 
----
+Login
 
-### Login
+httpPOST /api/auth/login
 
-```http
-POST /api/auth/login
-```
-
-```json
-{
+json{
   "email": "joao@email.com",
-  "password": "123456"
+  "password": "senha123"
 }
-```
 
 Resposta:
 
-```json
-{
-  "token": "jwt_token"
+json{
+  "token": "jwt_token",
+  "usuario": { "id": 1, "nome": "João Silva", "email": "joao@email.com" }
 }
-```
 
----
+Use o token em todas as rotas protegidas:
 
-## 📋 Endpoints
+httpAuthorization: Bearer jwt_token
 
-### Autenticação
 
-| Método | Endpoint           |
-| ------ | ------------------ |
-| POST   | /api/auth/register |
-| POST   | /api/auth/login    |
+🟢 Rota Pública
 
----
+MétodoEndpointDescriçãoGET/api/statusStatus e versão da API (sem login)GET/api/versaoAlias de /api/status
 
-### Produtos (JWT Obrigatório)
 
-| Método | Endpoint          | Descrição         |
-| ------ | ----------------- | ----------------- |
-| POST   | /api/products     | Criar produto     |
-| GET    | /api/products     | Listar produtos   |
-| GET    | /api/products/:id | Buscar produto    |
-| PUT    | /api/products/:id | Atualizar produto |
-| DELETE | /api/products/:id | Excluir produto   |
+📋 Endpoints
 
----
+Autenticação
 
-## 🧪 Exemplo de Produto
+MétodoEndpointPOST/api/auth/registerPOST/api/auth/login
 
-```json
-{
-  "name": "Notebook Gamer",
-  "description": "Notebook com placa de vídeo dedicada",
-  "price": 4999.99,
-  "category": "eletronicos",
-  "stock": 10,
-  "attributes": {
-    "ram": "16GB",
-    "processador": "Intel i7"
-  }
+Categorias 🔒 (JWT obrigatório)
+
+MétodoEndpointDescriçãoGET/api/categoriasListar categoriasGET/api/categorias/:idBuscar categoriaPOST/api/categoriasCriar categoriaPUT/api/categorias/:idAtualizar categoriaDELETE/api/categorias/:idExcluir categoria
+
+Produtos 🔒 (JWT obrigatório)
+
+MétodoEndpointDescriçãoGET/api/produtosListar produtosGET/api/produtos/:idBuscar produtoPOST/api/produtosCriar produtoPUT/api/produtos/:idAtualizar produtoDELETE/api/produtos/:idExcluir produto
+
+Clientes 🔒 (JWT obrigatório)
+
+MétodoEndpointDescriçãoGET/api/clientesListar clientesGET/api/clientes/:idBuscar clientePOST/api/clientesCriar clientePUT/api/clientes/:idAtualizar clienteDELETE/api/clientes/:idExcluir cliente
+
+Pedidos 🔒 (JWT obrigatório)
+
+MétodoEndpointDescriçãoGET/api/pedidosListar pedidosGET/api/pedidos/:idBuscar pedido (com itens)POST/api/pedidosCriar pedido + itens (transação)PUT/api/pedidos/:idAtualizar data/cliente do pedidoDELETE/api/pedidos/:idExcluir pedido (e seus itens)
+
+
+🧪 Exemplos de Payload
+
+Criar Categoria
+
+json{ "nome": "Eletrônicos" }
+
+Criar Produto
+
+json{
+  "nome": "Notebook Dell",
+  "valor": 3500.00,
+  "estoque": 10,
+  "categorias_id_categoria": 1
 }
-```
 
----
+Criar Cliente
 
-## 🛡️ Segurança Implementada
+json{
+  "nome": "Maria Souza",
+  "telefone": "51999998888",
+  "status": "bom"
+}
 
-### JWT
+Criar Pedido (com itens)
 
-Todas as rotas de produtos exigem autenticação.
+json{
+  "data": "2026-06-22",
+  "clientes_id_cliente": 1,
+  "itens": [
+    { "produtos_id_produto": 1, "quantidade": 2, "valor": 3500.00 }
+  ]
+}
 
-Exemplo:
 
-```http
-Authorization: Bearer seu_token_jwt
-```
+🛡️ Segurança Implementada
 
-### Proteção contra NoSQL Injection
+JWT + Validação de ID do usuário
 
-A aplicação utiliza:
+Todas as rotas de CRUD (Categorias, Produtos, Clientes, Pedidos) exigem:
 
-```javascript
-express-mongo-sanitize
-```
 
-para impedir manipulações maliciosas em consultas MongoDB.
+Token JWT válido no header Authorization: Bearer <token>
+O payload do token deve conter o id do usuário
 
----
 
-## 🎯 Objetivos Acadêmicos
+Qualquer requisição que não atenda às duas condições recebe 401 Unauthorized ou 403 Forbidden.
+
+httpAuthorization: Bearer seu_token_jwt
+
+Proteção contra SQL Injection
+
+Todas as queries usam Prepared Statements com mysql2:
+
+javascriptpool.execute('SELECT * FROM categorias WHERE id_categoria = ?', [id]);
+
+Nenhum valor de entrada do usuário é concatenado diretamente em uma query SQL.
+
+Senhas
+
+Senhas de usuário são hasheadas com bcryptjs (salt rounds = 12) antes de serem persistidas — nunca armazenadas em texto puro.
+
+Integridade Referencial
+
+Produtos, pedidos e itens de pedido validam a existência das entidades relacionadas (categoria, cliente, produto) antes de gravar no banco, além de contarem com as Foreign Keys definidas no próprio schema MySQL.
+
+
+🎯 Objetivos Acadêmicos
 
 Este projeto foi desenvolvido para praticar:
 
-* Desenvolvimento de APIs REST
-* Node.js
-* Express
-* MongoDB
-* Mongoose
-* JWT
-* Segurança em APIs
-* Middleware
-* Documentação com Swagger
 
----
+Migração de persistência NoSQL → SQL Relacional
+Padrão MVC (Model-View-Controller)
+Node.js e Express
+MySQL e mysql2 com Promises/async-await
+Prepared Statements e prevenção de SQL Injection
+JWT e autenticação adaptada a um SGBD relacional
+Transações SQL (commit/rollback)
+Documentação de API com Swagger
 
-## 👨‍💻 Autor
 
-**Murilo Ressler Garcez**
+
+👨‍💻 Autor
+
+Murilo Ressler Garcez
 
 Projeto desenvolvido para fins acadêmicos na disciplina de desenvolvimento back-end.
 
-GitHub:
-https://github.com/MuriloRessler
+GitHub: https://github.com/MuriloRessler
 
----
 
-## 📄 Licença
+📄 Licença
 
 Este projeto possui finalidade exclusivamente educacional.
-
